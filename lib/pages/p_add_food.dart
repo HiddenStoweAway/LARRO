@@ -1,4 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:larro/components/tag_autocomplete.dart';
 
 class AddFoodPage extends StatefulWidget {
@@ -11,8 +14,30 @@ class AddFoodPage extends StatefulWidget {
 class _AddFoodPageState extends State<AddFoodPage> {
   final restaurantTEC = TextEditingController();
   final restaurantFocusNode = FocusNode();
-  final sampleTags = ["Hello", "Test", "Wahoo"];
-  final addedTags = <String>[];
+  final restaurantSampleTags = ["In and Out", "Habit", "Peasant and the Pair"];
+  final restaurantAddedTags = <String>[];
+
+  final catagoriesTEC = TextEditingController();
+  final catagoriesFocusNode = FocusNode();
+  final catagoriesSampleTags = ["Drinks", "Pizzas", "Italian"];
+  final catagoriesAddedTags = <String>[];
+
+  final ratingTEC = TextEditingController();
+
+  final picker = ImagePicker();
+  File? image;
+
+  Future<void> pickImage() async {
+    final XFile? pickedImage = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedImage != null) {
+      setState(() {
+        image = File(pickedImage.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,41 +51,127 @@ class _AddFoodPageState extends State<AddFoodPage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(30.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                    children: [
-                      TagAutocomplete(
-                        addedTags: addedTags,
-                        autocompleteFrom: sampleTags,
-                        textEditingController: restaurantTEC,
-                        hintText: "Location",
-                      ),
-
-                      SizedBox(height: 30),
-                    
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        child: TagAutocomplete(
-                          addedTags: addedTags,
-                          autocompleteFrom: sampleTags,
-                          textEditingController: restaurantTEC,
-                          hintText: "Tags",
-                        ),
-                      ),
-                    ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Enter Restaurant Information:",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-            ],
+                SizedBox(height: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      children: [
+                        TagAutocomplete(
+                          addedTags: restaurantAddedTags,
+                          autocompleteFrom: restaurantSampleTags,
+                          textEditingController: restaurantTEC,
+                          hintText: "Location",
+                          onlyOneTag: true,
+                        ),
+
+                        SizedBox(height: 20),
+
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          child: TagAutocomplete(
+                            addedTags: catagoriesAddedTags,
+                            autocompleteFrom: catagoriesSampleTags,
+                            textEditingController: catagoriesTEC,
+                            hintText: "Catagories",
+                          ),
+                        ),
+
+                        SizedBox(height: 20),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: colorScheme.secondaryContainer,
+                            border: Border.all(color: colorScheme.secondary),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          width: 130,
+                          child: TextField(
+                            textAlign: TextAlign.center,
+                            controller: ratingTEC,
+                            keyboardType: TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d*\.?\d*'),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              if (value.isEmpty) return;
+                          
+                              final parsed = double.tryParse(value);
+                              if (parsed != null && parsed > 10) {
+                                ratingTEC.text = "10";
+                                ratingTEC.selection = TextSelection.collapsed(
+                                  offset: ratingTEC.text.length,
+                                );
+                              }
+                            },
+                            decoration: InputDecoration(
+                              hintText: "Rating 0-10",
+                              hintStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                                color: colorScheme.secondary,
+                              ),
+                              border: InputBorder.none
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  "Upload a photo:",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: colorScheme.secondary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10),
+                image == null
+                    ? GestureDetector(
+                        onTap: () {
+                          pickImage();
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 175,
+                          decoration: BoxDecoration(
+                            color: colorScheme.secondary,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Icon(
+                            Icons.upload,
+                            color: colorScheme.secondaryContainer,
+                          ),
+                        ),
+                      )
+                    : GestureDetector(
+                        onTap: pickImage,
+                        child: Image.file(image!),
+                      ),
+              ],
+            ),
           ),
         ),
       ),

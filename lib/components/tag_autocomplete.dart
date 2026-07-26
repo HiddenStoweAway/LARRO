@@ -7,11 +7,13 @@ class TagAutocomplete extends StatefulWidget {
     required this.autocompleteFrom,
     required this.textEditingController,
     this.hintText,
+    this.onlyOneTag = false,
   });
   final List<String> addedTags;
   final List<String> autocompleteFrom;
   final TextEditingController textEditingController;
   final String? hintText;
+  final bool onlyOneTag;
 
   @override
   State<TagAutocomplete> createState() => _TagAutocompleteState();
@@ -23,6 +25,8 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
   void addTag(String tag) {
     tag = tag.trim();
     if (tag.isEmpty || widget.addedTags.contains(tag)) return;
+    if (widget.onlyOneTag) widget.addedTags.clear();
+
 
     setState(() {
       widget.addedTags.add(tag);
