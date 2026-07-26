@@ -24,7 +24,7 @@ class HomePage extends StatelessWidget {
             ),
             SizedBox(height: 5),
             Text(
-              "Add a food!",
+              "Add a food or drink!",
               style: TextStyle(
                 fontSize: 21,
                 fontWeight: FontWeight.bold,
