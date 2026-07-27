@@ -31,6 +31,8 @@ class SaveManager {
       "imagePath": savedImage.path,
     });
 
+    await saveRestaurant(food.restaurant);
+
     await saveTags(food.tags);
   }
 
@@ -60,13 +62,27 @@ class SaveManager {
     }
   }
 
+  Future<void> saveRestaurant(String restaurant) async {
+    final existingRestaurants = Hive.box("restaurants").values;
+    if (!existingRestaurants
+        .map((value) => value.toLowerCase())
+        .contains(restaurant.toLowerCase())) {
+      Hive.box('restaurants').add(restaurant);
+    }
+  }
+
   List<String> getTags() {
     return Hive.box("tags").values.cast<String>().toList();
+  }
+
+  List<String> getRestaurants() {
+    return Hive.box("restaurants").values.cast<String>().toList();
   }
 
   Future<void> deleteData() async {
     await Hive.box('foods').clear();
     await Hive.box('tags').clear();
+    await Hive.box('restaurants').clear();
   }
 }
 

@@ -15,12 +15,10 @@ class AddFoodPage extends StatefulWidget {
 class _AddFoodPageState extends State<AddFoodPage> {
   final restaurantTEC = TextEditingController();
   final restaurantFocusNode = FocusNode();
-  final restaurantSampleTags = ["In and Out", "Habit", "Peasant and the Pair"];
   final restaurantAddedTags = <String>[];
 
   final catagoriesTEC = TextEditingController();
   final catagoriesFocusNode = FocusNode();
-  final catagoriesSampleTags = ["Drinks", "Pizzas", "Italian"];
   final catagoriesAddedTags = <String>[];
 
   final ratingTEC = TextEditingController();
@@ -40,19 +38,19 @@ class _AddFoodPageState extends State<AddFoodPage> {
     }
   }
 
-  void addFood() {
+  void addFood() async {
     final manager = SaveManager.instance;
 
     final foodId = manager.getNextId();
     final entry = FoodEntry(
       id: foodId,
-      restaurant: restaurantTEC.text,
+      restaurant: restaurantAddedTags[0],
       tags: catagoriesAddedTags,
       rating: double.parse(ratingTEC.text),
       image: image!,
     );
 
-    manager.saveFoodEntry(entry);
+    await manager.saveFoodEntry(entry);
 
     Navigator.pop(context);
   }
@@ -60,6 +58,8 @@ class _AddFoodPageState extends State<AddFoodPage> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final restaurantAutocorrectTags = SaveManager.instance.getRestaurants();
+    final catagoriesAutocorrectTags = SaveManager.instance.getTags();
 
     return Scaffold(
       appBar: AppBar(
@@ -95,7 +95,7 @@ class _AddFoodPageState extends State<AddFoodPage> {
                       children: [
                         TagAutocomplete(
                           addedTags: restaurantAddedTags,
-                          autocompleteFrom: restaurantSampleTags,
+                          autocompleteFrom: restaurantAutocorrectTags,
                           textEditingController: restaurantTEC,
                           hintText: "Location",
                           onlyOneTag: true,
@@ -107,7 +107,7 @@ class _AddFoodPageState extends State<AddFoodPage> {
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           child: TagAutocomplete(
                             addedTags: catagoriesAddedTags,
-                            autocompleteFrom: catagoriesSampleTags,
+                            autocompleteFrom: catagoriesAutocorrectTags,
                             textEditingController: catagoriesTEC,
                             hintText: "Catagories",
                           ),

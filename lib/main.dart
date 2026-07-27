@@ -8,6 +8,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox("foods");
   await Hive.openBox("tags");
+  await Hive.openBox("restaurants");
   runApp(MyApp());
 }
 

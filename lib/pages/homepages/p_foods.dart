@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:larro/manages/save_manager.dart';
+import 'package:larro/pages/p_add_food.dart';
 
 class FoodsPage extends StatefulWidget {
   const FoodsPage({super.key});
@@ -15,10 +16,22 @@ class _FoodsPageState extends State<FoodsPage> {
     final saveManager = SaveManager.instance;
 
     final tags = saveManager.getTags();
-    print(tags);
+    print(saveManager.getRestaurants());
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
+      floatingActionButton: FloatingActionButton.large(
+        onPressed: () async {
+          await Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => AddFoodPage()));
+          setState(() {});
+        },
+        shape: const CircleBorder(),
+        backgroundColor: colorScheme.secondary,
+        child: Icon(Icons.add, color: colorScheme.onSecondary),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: AppBar(
         elevation: 5,
         shadowColor: colorScheme.primary,
@@ -54,7 +67,6 @@ class _FoodsPageState extends State<FoodsPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-
                           // just to make the spacing symetrical
                           Icon(
                             Icons.keyboard_arrow_down_outlined,

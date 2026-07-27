@@ -27,7 +27,6 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
     if (tag.isEmpty || widget.addedTags.contains(tag)) return;
     if (widget.onlyOneTag) widget.addedTags.clear();
 
-
     setState(() {
       widget.addedTags.add(tag);
       if (!widget.autocompleteFrom.contains(tag)) {
@@ -47,6 +46,42 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+
+    if (widget.onlyOneTag && widget.addedTags.isNotEmpty) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Location: ",
+            style: TextStyle(
+              color: colorScheme.primary,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+
+          SizedBox(width: 15),
+
+          ...widget.addedTags.map((tag) {
+            return Chip(
+              label: Text(tag),
+              backgroundColor: colorScheme.secondary,
+              side: BorderSide.none,
+              labelStyle: TextStyle(
+                color: colorScheme.surface,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+              ),
+              onDeleted: () {
+                removeTag(tag);
+              },
+              deleteIconColor: colorScheme.secondaryContainer,
+            );
+          }).toList(),
+        ],
+      );
+    }
 
     return Column(
       children: [
@@ -107,6 +142,7 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
                       return TextField(
                         controller: textEditingController,
                         focusNode: focusNode,
+                        autocorrect: false,
 
                         // happens whenever the use presses enter in the text field
                         onSubmitted: (value) {

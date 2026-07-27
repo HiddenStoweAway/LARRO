@@ -54,8 +54,8 @@ class EmptyHomePage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: colorScheme.secondary,
                 ),
-                onPressed: () {
-                  Navigator.of(context).push(
+                onPressed: () async {
+                  await Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => AddFoodPage()),
                   );
                 },
