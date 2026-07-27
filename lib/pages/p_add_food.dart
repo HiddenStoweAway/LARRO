@@ -42,12 +42,48 @@ class _AddFoodPageState extends State<AddFoodPage> {
     final manager = SaveManager.instance;
 
     final foodId = manager.getNextId();
+
+    var errorMessage = "";
+
+    if (restaurantAddedTags.isEmpty) {
+      if (restaurantTEC.text.isNotEmpty) {
+        restaurantAddedTags.add(restaurantTEC.text);
+      } else {
+        errorMessage = "Please enter a location.";
+      }
+    }
+
+    if (ratingTEC.text.isEmpty) {
+      errorMessage += "\nPlease enter a rating.";
+    }
+
+    if (errorMessage != "") {
+      final colorScheme = Theme.of(context).colorScheme;
+
+      final snackBar = SnackBar(
+        elevation: 1,
+        content: Center(
+          child: Text(
+            errorMessage,
+            style: TextStyle(
+              color: colorScheme.onTertiary,
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
+          ),
+        ),
+        backgroundColor: colorScheme.tertiary,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+
     final entry = FoodEntry(
       id: foodId,
       restaurant: restaurantAddedTags[0],
       tags: catagoriesAddedTags,
       rating: double.parse(ratingTEC.text),
-      image: image!,
+      image: image,
     );
 
     await manager.saveFoodEntry(entry);

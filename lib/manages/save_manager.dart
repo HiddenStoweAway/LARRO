@@ -21,14 +21,14 @@ class SaveManager {
     final dir = await getApplicationDocumentsDirectory();
     final box = Hive.box('foods');
 
-    final savedImage = await food.image.copy('${dir.path}/${food.id}');
+    final savedImage = await food.image?.copy('${dir.path}/${food.id}');
 
     await box.add({
       "id": food.id,
       "restaurant": food.restaurant,
       "tags": food.tags,
       "rating": food.rating,
-      "imagePath": savedImage.path,
+      "imagePath": savedImage?.path,
     });
 
     await saveRestaurant(food.restaurant);
@@ -57,6 +57,7 @@ class SaveManager {
     final newTags = tags.where(
       (tag) => !existingTags.contains(tag),
     ); // all unsaved tags
+
     for (final tag in newTags) {
       Hive.box('tags').add(tag);
     }
@@ -91,13 +92,13 @@ class FoodEntry {
   String restaurant;
   List<String> tags;
   double rating;
-  File image;
+  File? image;
 
   FoodEntry({
     required this.id,
     required this.restaurant,
-    required this.tags,
     required this.rating,
-    required this.image,
+    required this.tags,
+    this.image,
   });
 }
