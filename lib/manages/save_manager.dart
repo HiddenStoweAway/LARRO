@@ -1,13 +1,20 @@
 import 'dart:io';
 
-import 'package:hive/hive.dart';
+import 'package:flutter/foundation.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SaveManager {
   static SaveManager instance = SaveManager();
 
-  int getNextId(){
-    return getFoodEntrys().length;
+  ValueListenable<Box> get listenable => Hive.box('foods').listenable();
+
+  int getNextId() {
+    final entries = getFoodEntrys();
+    if (entries.isEmpty) return 0;
+
+    // gets the greatest id in the box, then adds one.
+    return entries.map((e) => e.id).reduce((a, b) => a > b ? a : b) + 1;
   }
 
   Future<void> saveFoodEntry(FoodEntry food) async {
@@ -23,11 +30,12 @@ class SaveManager {
       "rating": food.rating,
       "imagePath": savedImage.path,
     });
+
+    await saveTags(food.tags);
   }
 
   List<FoodEntry> getFoodEntrys() {
     final entries = Hive.box('foods').values.toList();
-    print(entries);
 
     final foodEntries = entries.map((entry) {
       return FoodEntry(
@@ -40,6 +48,25 @@ class SaveManager {
     }).toList();
 
     return foodEntries;
+  }
+
+  Future<void> saveTags(List<String> tags) async {
+    final existingTags = Hive.box("tags").values;
+    final newTags = tags.where(
+      (tag) => !existingTags.contains(tag),
+    ); // all unsaved tags
+    for (final tag in newTags) {
+      Hive.box('tags').add(tag);
+    }
+  }
+
+  List<String> getTags() {
+    return Hive.box("tags").values.cast<String>().toList();
+  }
+
+  Future<void> deleteData() async {
+    await Hive.box('foods').clear();
+    await Hive.box('tags').clear();
   }
 }
 

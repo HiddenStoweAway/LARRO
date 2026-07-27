@@ -63,6 +63,8 @@ class _AddFoodPageState extends State<AddFoodPage> {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 5,
+        shadowColor: colorScheme.primary,
         backgroundColor: colorScheme.primary,
         title: Image.asset("assets/logo.png", height: 200),
       ),
