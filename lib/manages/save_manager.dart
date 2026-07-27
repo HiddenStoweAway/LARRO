@@ -14,19 +14,20 @@ class SaveManager {
     final dir = await getApplicationDocumentsDirectory();
     final box = Hive.box('foods');
 
-    final savedImagePath = await food.image.copy('${dir.path}/${food.id}');
+    final savedImage = await food.image.copy('${dir.path}/${food.id}');
 
     await box.add({
       "id": food.id,
       "restaurant": food.restaurant,
       "tags": food.tags,
       "rating": food.rating,
-      "imagePath": savedImagePath,
+      "imagePath": savedImage.path,
     });
   }
 
   List<FoodEntry> getFoodEntrys() {
     final entries = Hive.box('foods').values.toList();
+    print(entries);
 
     final foodEntries = entries.map((entry) {
       return FoodEntry(

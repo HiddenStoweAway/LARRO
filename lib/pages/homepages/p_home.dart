@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:larro/manages/save_manager.dart';
 import 'package:larro/pages/p_add_food.dart';
 
 class HomePage extends StatelessWidget {
@@ -7,6 +8,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+
+    print(SaveManager.instance.getFoodEntrys());
 
     return Scaffold(
       backgroundColor: colorScheme.surface,

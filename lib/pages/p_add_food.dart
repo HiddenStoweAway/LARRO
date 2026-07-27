@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:larro/components/tag_autocomplete.dart';
+import 'package:larro/manages/save_manager.dart';
 
 class AddFoodPage extends StatefulWidget {
   const AddFoodPage({super.key});
@@ -37,6 +38,23 @@ class _AddFoodPageState extends State<AddFoodPage> {
         image = File(pickedImage.path);
       });
     }
+  }
+
+  void addFood() {
+    final manager = SaveManager.instance;
+
+    final foodId = manager.getNextId();
+    final entry = FoodEntry(
+      id: foodId,
+      restaurant: restaurantTEC.text,
+      tags: catagoriesAddedTags,
+      rating: double.parse(ratingTEC.text),
+      image: image!,
+    );
+
+    manager.saveFoodEntry(entry);
+
+    Navigator.pop(context);
   }
 
   @override
@@ -183,7 +201,9 @@ class _AddFoodPageState extends State<AddFoodPage> {
                       backgroundColor: colorScheme.secondaryContainer,
                       side: BorderSide(color: colorScheme.secondary, width: 2),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      addFood();
+                    },
                     child: Icon(
                       Icons.add,
                       color: colorScheme.secondary,
