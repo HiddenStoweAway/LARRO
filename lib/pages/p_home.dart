@@ -57,7 +57,7 @@ class HomePage extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => AddFoodPage()),
                   );
                 },
-                child: Icon(Icons.add, color: colorScheme.tertiary, size: 25),
+                child: Icon(Icons.add, color: colorScheme.secondaryContainer, size: 25),
               ),
             ),
           ],

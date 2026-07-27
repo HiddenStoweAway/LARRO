@@ -97,7 +97,10 @@ class _AddFoodPageState extends State<AddFoodPage> {
                         Container(
                           decoration: BoxDecoration(
                             color: colorScheme.secondaryContainer,
-                            border: Border.all(color: colorScheme.secondary),
+                            border: Border.all(
+                              color: colorScheme.secondary,
+                              width: 2,
+                            ),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           width: 130,
@@ -114,7 +117,7 @@ class _AddFoodPageState extends State<AddFoodPage> {
                             ],
                             onChanged: (value) {
                               if (value.isEmpty) return;
-                          
+
                               final parsed = double.tryParse(value);
                               if (parsed != null && parsed > 10) {
                                 ratingTEC.text = "10";
@@ -130,7 +133,7 @@ class _AddFoodPageState extends State<AddFoodPage> {
                                 fontStyle: FontStyle.italic,
                                 color: colorScheme.secondary,
                               ),
-                              border: InputBorder.none
+                              border: InputBorder.none,
                             ),
                           ),
                         ),
@@ -170,6 +173,24 @@ class _AddFoodPageState extends State<AddFoodPage> {
                         onTap: pickImage,
                         child: Image.file(image!),
                       ),
+
+                SizedBox(height: 30),
+                SizedBox(
+                  width: 175,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.secondaryContainer,
+                      side: BorderSide(color: colorScheme.secondary, width: 2),
+                    ),
+                    onPressed: () {},
+                    child: Icon(
+                      Icons.add,
+                      color: colorScheme.secondary,
+                      size: 25,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
