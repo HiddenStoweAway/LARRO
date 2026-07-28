@@ -10,13 +10,44 @@ class FoodsPage extends StatefulWidget {
 }
 
 class _FoodsPageState extends State<FoodsPage> {
+  final Map<String, List<FoodEntry>> foodsByTag = {"ALL": []};
+  final openedTags = [];
+
+  void fillFoodsByTag() {
+    foodsByTag.clear();
+    foodsByTag.addAll({"ALL": []});
+
+    final foodEntries = SaveManager.instance.getFoodEntrys();
+    for (var food in foodEntries) {
+      for (var tag in food.tags) {
+        if (foodsByTag.keys.contains(tag)) {
+          foodsByTag[tag]!.add(food);
+        } else {
+          foodsByTag.addAll({
+            tag: [food],
+          });
+        }
+      }
+
+      foodsByTag["ALL"]!.add(food);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final saveManager = SaveManager.instance;
 
-    final tags = saveManager.getTags();
-    print(saveManager.getRestaurants());
+    fillFoodsByTag();
+
+    final sortedEntries = foodsByTag.entries.toList()
+      ..sort((a, b) {
+        if (a.key == "ALL") return 1; // ALL always goes after
+        if (b.key == "ALL") return -1; // anything else goes before ALL
+        return a.key.compareTo(
+          b.key,
+        ); // normal alphabetical for everything else
+      });
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -50,44 +81,81 @@ class _FoodsPageState extends State<FoodsPage> {
         child: Column(
           children: [
             Container(
-              color: colorScheme.secondaryContainer,
               child: Column(
                 children: [
-                  ...tags.map((value) {
-                    return Container(
-                      width: double.infinity,
-                      height: 75,
-                      decoration: BoxDecoration(
-                        color: colorScheme.secondary,
-                        border: BoxBorder.all(
-                          color: colorScheme.secondaryContainer,
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          // just to make the spacing symetrical
-                          Icon(
-                            Icons.keyboard_arrow_down_outlined,
-                            color: colorScheme.secondary,
-                          ),
+                  ...sortedEntries.map((value) {
+                    return Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              if (openedTags.contains(value.key)) {
+                                openedTags.remove(value.key);
+                              } else {
+                                openedTags.add(value.key);
+                              }
+                            });
+                          },
+                          borderRadius: BorderRadius.circular(
+                            15,
+                          ), // clips splash/highlight to rounded corners
+                          splashColor: colorScheme.primaryContainer,
+                          child: Ink(
+                            width: double.infinity,
+                            height: 75,
+                            decoration: BoxDecoration(
+                              color: colorScheme.secondary,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                // just to make the spacing symetrical
+                                Icon(
+                                  Icons.keyboard_arrow_down_outlined,
+                                  color: colorScheme.secondary,
+                                ),
 
-                          Text(
-                            value,
-                            style: TextStyle(
-                              color: colorScheme.onSecondary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                                Text(
+                                  value.key,
+                                  style: TextStyle(
+                                    color: colorScheme.onSecondary,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                Icon(
+                                  Icons.keyboard_arrow_down_outlined,
+                                  color: colorScheme.onSecondary,
+                                ),
+                              ],
                             ),
                           ),
-
-                          Icon(
-                            Icons.keyboard_arrow_down_outlined,
-                            color: colorScheme.onSecondary,
-                          ),
-                        ],
-                      ),
+                        ),
+                        if (openedTags.contains(value.key))
+                          ...value.value.map((food) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 2),
+                              child: InkWell(
+                                onTap: () {},
+                                borderRadius: BorderRadius.circular(
+                                  15,
+                                ), // clips splash/highlight to rounded corners
+                                splashColor: colorScheme.primaryContainer,
+                                child: Ink(
+                                  width: double.infinity,
+                                  height: 75,
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.tertiary,
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Row(children: [Text(food.restaurant)]),
+                                ),
+                              ),
+                            );
+                          }),
+                      ],
                     );
                   }),
                 ],

@@ -78,7 +78,7 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
               },
               deleteIconColor: colorScheme.secondaryContainer,
             );
-          }).toList(),
+          }),
         ],
       );
     }

@@ -101,4 +101,9 @@ class FoodEntry {
     required this.tags,
     this.image,
   });
+
+  @override
+  String toString() {
+    return 'FoodEntry(id: $id, restaurant: $restaurant, tags: $tags, rating: $rating, image: ${image?.path})';
+  }
 }
