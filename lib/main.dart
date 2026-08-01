@@ -9,6 +9,7 @@ void main() async {
   await Hive.openBox("foods");
   await Hive.openBox("tags");
   await Hive.openBox("restaurants");
+  await Hive.openBox("items");
   runApp(MyApp());
 }
 

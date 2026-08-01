@@ -52,11 +52,11 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Location: ",
+            "Item Name: ",
             style: TextStyle(
               color: colorScheme.primary,
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 15,
               fontStyle: FontStyle.italic,
             ),
           ),

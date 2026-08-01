@@ -9,8 +9,8 @@ class SaveManager {
 
   ValueListenable<Box> get listenable => Hive.box('foods').listenable();
 
-  int getNextId() {
-    final entries = getFoodEntrys();
+  Future<int> getNextId() async {
+    final entries = await getFoodEntrys();
     if (entries.isEmpty) return 0;
 
     // gets the greatest id in the box, then adds one.
@@ -21,14 +21,14 @@ class SaveManager {
     final dir = await getApplicationDocumentsDirectory();
     final box = Hive.box('foods');
 
-    final savedImage = await food.image?.copy('${dir.path}/${food.id}');
+    await food.image?.copy('${dir.path}/${food.id}');
 
     await box.add({
       "id": food.id,
       "restaurant": food.restaurant,
       "tags": food.tags,
+      "itemName": food.itemName,
       "rating": food.rating,
-      "imagePath": savedImage?.path,
     });
 
     await saveRestaurant(food.restaurant);
@@ -36,16 +36,18 @@ class SaveManager {
     await saveTags(food.tags);
   }
 
-  List<FoodEntry> getFoodEntrys() {
+  Future<List<FoodEntry>> getFoodEntrys() async {
     final entries = Hive.box('foods').values.toList();
+    final dir = await getApplicationDocumentsDirectory();
 
     final foodEntries = entries.map((entry) {
       return FoodEntry(
         id: entry['id'],
+        itemName: entry['itemName'],
         restaurant: entry['restaurant'],
         tags: entry['tags'],
         rating: entry['rating'],
-        image: File(entry['imagePath']),
+        image: File("${dir.path}/${entry['id']}"),
       );
     }).toList();
 
@@ -55,11 +57,22 @@ class SaveManager {
   Future<void> saveTags(List<String> tags) async {
     final existingTags = Hive.box("tags").values;
     final newTags = tags.where(
-      (tag) => !existingTags.contains(tag),
+      (tag) => !existingTags
+          .map((value) => value.toLowerCase())
+          .contains(tag.toLowerCase()),
     ); // all unsaved tags
 
     for (final tag in newTags) {
       Hive.box('tags').add(tag);
+    }
+  }
+
+  Future<void> saveItem(String item) async {
+    final existingItems = Hive.box("items").values;
+    if (!existingItems
+        .map((value) => value.toLowerCase())
+        .contains(item.toLowerCase())) {
+      Hive.box('items').add(item);
     }
   }
 
@@ -76,6 +89,10 @@ class SaveManager {
     return Hive.box("tags").values.cast<String>().toList();
   }
 
+  List<String> getItems(){
+    return Hive.box('items').values.cast<String>().toList();
+  }
+
   List<String> getRestaurants() {
     return Hive.box("restaurants").values.cast<String>().toList();
   }
@@ -90,6 +107,7 @@ class SaveManager {
 class FoodEntry {
   int id;
   String restaurant;
+  String itemName;
   List<String> tags;
   double rating;
   File? image;
@@ -97,6 +115,7 @@ class FoodEntry {
   FoodEntry({
     required this.id,
     required this.restaurant,
+    required this.itemName,
     required this.rating,
     required this.tags,
     this.image,

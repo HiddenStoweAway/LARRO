@@ -17,6 +17,10 @@ class _AddFoodPageState extends State<AddFoodPage> {
   final restaurantFocusNode = FocusNode();
   final restaurantAddedTags = <String>[];
 
+  final itemTEC = TextEditingController();
+  final itemFocusNode = FocusNode();
+  final itemAddedTags = <String>[];
+
   final catagoriesTEC = TextEditingController();
   final catagoriesFocusNode = FocusNode();
   final catagoriesAddedTags = <String>[];
@@ -41,15 +45,23 @@ class _AddFoodPageState extends State<AddFoodPage> {
   void addFood() async {
     final manager = SaveManager.instance;
 
-    final foodId = manager.getNextId();
+    final foodId = await manager.getNextId();
 
     var errorMessage = "";
 
     if (restaurantAddedTags.isEmpty) {
       if (restaurantTEC.text.isNotEmpty) {
-        restaurantAddedTags.add(restaurantTEC.text);
+        restaurantAddedTags.add(itemTEC.text);
       } else {
         errorMessage = "Please enter a location.";
+      }
+    }
+
+    if (itemAddedTags.isEmpty) {
+      if (itemTEC.text.isNotEmpty) {
+        itemAddedTags.add(itemTEC.text);
+      } else {
+        errorMessage = "Please enter an item name.";
       }
     }
 
@@ -80,6 +92,7 @@ class _AddFoodPageState extends State<AddFoodPage> {
 
     final entry = FoodEntry(
       id: foodId,
+      itemName: itemAddedTags[0],
       restaurant: restaurantAddedTags[0],
       tags: catagoriesAddedTags,
       rating: double.parse(ratingTEC.text),
@@ -96,6 +109,7 @@ class _AddFoodPageState extends State<AddFoodPage> {
     final colorScheme = Theme.of(context).colorScheme;
     final restaurantAutocorrectTags = SaveManager.instance.getRestaurants();
     final catagoriesAutocorrectTags = SaveManager.instance.getTags();
+    final itemAutocorrectTags = SaveManager.instance.getItems();
 
     return Scaffold(
       appBar: AppBar(
@@ -139,14 +153,21 @@ class _AddFoodPageState extends State<AddFoodPage> {
 
                         SizedBox(height: 20),
 
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          child: TagAutocomplete(
-                            addedTags: catagoriesAddedTags,
-                            autocompleteFrom: catagoriesAutocorrectTags,
-                            textEditingController: catagoriesTEC,
-                            hintText: "Catagories",
-                          ),
+                        TagAutocomplete(
+                          addedTags: itemAddedTags,
+                          autocompleteFrom: itemAutocorrectTags,
+                          textEditingController: itemTEC,
+                          hintText: "Item name",
+                          onlyOneTag: true,
+                        ),
+
+                        SizedBox(height: 20),
+
+                        TagAutocomplete(
+                          addedTags: catagoriesAddedTags,
+                          autocompleteFrom: catagoriesAutocorrectTags,
+                          textEditingController: catagoriesTEC,
+                          hintText: "Catagories",
                         ),
 
                         SizedBox(height: 20),
@@ -242,10 +263,13 @@ class _AddFoodPageState extends State<AddFoodPage> {
                     onPressed: () {
                       addFood();
                     },
-                    child: Icon(
-                      Icons.add,
-                      color: colorScheme.secondary,
-                      size: 25,
+                    child: Text(
+                      "Submit",
+                      style: TextStyle(
+                        color: colorScheme.secondary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),
