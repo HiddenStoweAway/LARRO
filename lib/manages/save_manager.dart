@@ -29,6 +29,7 @@ class SaveManager {
       "tags": food.tags,
       "itemName": food.itemName,
       "rating": food.rating,
+      "dateTime": food.dateTime,
     });
 
     await saveRestaurant(food.restaurant);
@@ -48,6 +49,7 @@ class SaveManager {
         tags: entry['tags'],
         rating: entry['rating'],
         image: File("${dir.path}/${entry['id']}"),
+        dateTime: entry['dateTime'],
       );
     }).toList();
 
@@ -111,6 +113,7 @@ class FoodEntry {
   List<String> tags;
   double rating;
   File? image;
+  DateTime dateTime;
 
   FoodEntry({
     required this.id,
@@ -118,6 +121,7 @@ class FoodEntry {
     required this.itemName,
     required this.rating,
     required this.tags,
+    required this.dateTime,
     this.image,
   });
 

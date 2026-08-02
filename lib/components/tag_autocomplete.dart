@@ -43,6 +43,14 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
     });
   }
 
+  Iterable<String> autocompleteOptions(String value) {
+    return widget.autocompleteFrom.where(
+      (tag) =>
+          tag.toLowerCase().contains(value.toLowerCase()) &&
+          !widget.addedTags.contains(tag),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -65,7 +73,17 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
 
           ...widget.addedTags.map((tag) {
             return Chip(
-              label: Text(tag),
+              label: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.3
+                ),
+                child: Text(
+                  tag,
+                  overflow: TextOverflow
+                      .ellipsis, // long tags get truncated with "..."
+                  maxLines: 1,
+                ),
+              ),
               backgroundColor: colorScheme.secondary,
               side: BorderSide.none,
               labelStyle: TextStyle(
@@ -90,7 +108,17 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
           runSpacing: 4,
           children: widget.addedTags.map((tag) {
             return Chip(
-              label: Text(tag),
+              label: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.3
+                ),
+                child: Text(
+                  tag,
+                  overflow: TextOverflow
+                      .ellipsis, // long tags get truncated with "..."
+                  maxLines: 1,
+                ),
+              ),
               backgroundColor: colorScheme.secondary,
               side: BorderSide.none,
               labelStyle: TextStyle(
@@ -115,13 +143,7 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
                     return Iterable<String>.empty();
                   }
 
-                  return widget.autocompleteFrom.where(
-                    (tag) =>
-                        tag.toLowerCase().contains(
-                          textEditingValue.text.toLowerCase(),
-                        ) &&
-                        !widget.addedTags.contains(tag),
-                  );
+                  return autocompleteOptions(textEditingValue.text);
                 },
 
                 textEditingController: widget.textEditingController,
@@ -146,14 +168,9 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
 
                         // happens whenever the use presses enter in the text field
                         onSubmitted: (value) {
-                          final autoCompleteOptions = widget.autocompleteFrom
-                              .where(
-                                (tag) =>
-                                    tag.toLowerCase().contains(
-                                      value.toLowerCase(),
-                                    ) &&
-                                    !widget.addedTags.contains(tag),
-                              );
+                          final autoCompleteOptions = autocompleteOptions(
+                            value,
+                          );
 
                           // if there are no autocomplete options,
                           // then pressing enter will add the tag that's just the text there, no autocomplete

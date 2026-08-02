@@ -89,115 +89,33 @@ class _FoodsPageState extends State<FoodsPage> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  child: Column(
+                ...sortedEntries.map((value) {
+                  return ExpansionTile(
+                    backgroundColor: colorScheme.primaryContainer,
+                    collapsedBackgroundColor: colorScheme.secondary,
+                    title: Text(
+                      value.key,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     children: [
-                      ...sortedEntries.map((value) {
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: !openedTags.contains(value.key)
-                                    ? 8.0
-                                    : 0,
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    if (openedTags.contains(value.key)) {
-                                      openedTags.remove(value.key);
-                                    } else {
-                                      openedTags.add(value.key);
-                                    }
-                                  });
-                                },
-                                borderRadius: BorderRadius.circular(
-                                  15,
-                                ), // clips splash/highlight to rounded corners
-                                splashColor: colorScheme.primaryContainer,
-                                child: Ink(
-                                  width: double.infinity,
-                                  height: 75,
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.secondary,
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      // just to make the spacing symetrical
-                                      Icon(
-                                        Icons.keyboard_arrow_down_outlined,
-                                        color: colorScheme.secondary,
-                                      ),
-
-                                      Text(
-                                        value.key,
-                                        style: TextStyle(
-                                          color: colorScheme.onSecondary,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-
-                                      Icon(
-                                        Icons.keyboard_arrow_down_outlined,
-                                        color: colorScheme.onSecondary,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            if (openedTags.contains(value.key))
-                              ...value.value.map((food) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 2),
-                                  child: InkWell(
-                                    onTap: () {},
-                                    borderRadius: BorderRadius.circular(
-                                      15,
-                                    ), // clips splash/highlight to rounded corners
-                                    splashColor: colorScheme.primaryContainer,
-                                    child: Ink(
-                                      width: double.infinity,
-                                      height: 75,
-                                      decoration: BoxDecoration(
-                                        color: colorScheme.tertiary,
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          if (food.image != null)
-                                            Padding(
-                                              padding: const EdgeInsets.all(
-                                                8.0,
-                                              ),
-                                              child: Image.file(food.image!),
-                                            ),
-                                          Text(
-                                            food.restaurant,
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                              color: colorScheme.onTertiary,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }),
-                          ],
+                      ...value.value.map((entry) {
+                        return ListTile(
+                          leading: entry.image != null
+                              ? Image.file(entry.image!)
+                              : null,
+                          title: Text(
+                            entry.restaurant,
+                            style: TextStyle(fontWeight: FontWeight.bold, color: colorScheme.onPrimaryContainer),
+                          ),
+                          trailing: Text(
+                            "${entry.dateTime.month}/${entry.dateTime.day}/${entry.dateTime.year - 2000}",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: colorScheme.onPrimaryContainer),
+                          ),
                         );
                       }),
                     ],
-                  ),
-                ),
+                  );
+                }),
               ],
             ),
           ),

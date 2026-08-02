@@ -97,6 +97,7 @@ class _AddFoodPageState extends State<AddFoodPage> {
       tags: catagoriesAddedTags,
       rating: double.parse(ratingTEC.text),
       image: image,
+      dateTime: DateTime.now()
     );
 
     await manager.saveFoodEntry(entry);
@@ -184,9 +185,6 @@ class _AddFoodPageState extends State<AddFoodPage> {
                           child: TextField(
                             textAlign: TextAlign.center,
                             controller: ratingTEC,
-                            keyboardType: TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
                                 RegExp(r'^\d*\.?\d*'),
