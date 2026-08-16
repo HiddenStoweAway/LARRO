@@ -37,6 +37,8 @@ class _FoodsPageState extends State<FoodsPage> {
         });
       }
 
+      print(food);
+
       foodsByTag["ALL"]!.add(food);
     }
   }
@@ -90,26 +92,49 @@ class _FoodsPageState extends State<FoodsPage> {
             child: Column(
               children: [
                 ...sortedEntries.map((value) {
+                  final sortedValues = value.value
+                    ..sort((a, b) {
+                      return -a.rating.compareTo(
+                        b.rating,
+                      ); // this is ascending, we want it descending
+                    });
+
                   return ExpansionTile(
                     backgroundColor: colorScheme.primaryContainer,
                     collapsedBackgroundColor: colorScheme.secondary,
+                    leading: sortedValues.isNotEmpty && sortedValues[0].image != null
+                                ? Image.file(sortedValues[0].image!)
+                                : Icon(Icons.question_mark),
                     title: Text(
                       value.key,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     children: [
-                      ...value.value.map((entry) {
+                      ...sortedValues.map((entry) {
                         return ListTile(
-                          leading: entry.image != null
-                              ? Image.file(entry.image!)
-                              : null,
+                          onTap: () {},
+                          splashColor: colorScheme.primary,
+                          leading: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2.0),
+                            child: entry.image != null
+                                ? Image.file(entry.image!)
+                                : Icon(Icons.question_mark),
+                          ),
                           title: Text(
                             entry.restaurant,
-                            style: TextStyle(fontWeight: FontWeight.bold, color: colorScheme.onPrimaryContainer),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onPrimaryContainer,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           trailing: Text(
-                            "${entry.dateTime.month}/${entry.dateTime.day}/${entry.dateTime.year - 2000}",
-                            style: TextStyle(fontWeight: FontWeight.bold, color: colorScheme.onPrimaryContainer),
+                            "${entry.rating}   |   ${entry.dateTime.month}/${entry.dateTime.day}/${entry.dateTime.year - 2000}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onPrimaryContainer,
+                            ),
                           ),
                         );
                       }),

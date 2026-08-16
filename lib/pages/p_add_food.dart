@@ -61,12 +61,16 @@ class _AddFoodPageState extends State<AddFoodPage> {
       if (itemTEC.text.isNotEmpty) {
         itemAddedTags.add(itemTEC.text);
       } else {
-        errorMessage = "Please enter an item name.";
+        errorMessage += "Please enter an item name.";
       }
     }
 
     if (ratingTEC.text.isEmpty) {
       errorMessage += "\nPlease enter a rating.";
+    }
+
+    if (image == null) {
+      errorMessage += "\nPlease add a photo.";
     }
 
     if (errorMessage != "") {
@@ -96,8 +100,8 @@ class _AddFoodPageState extends State<AddFoodPage> {
       restaurant: restaurantAddedTags[0],
       tags: catagoriesAddedTags,
       rating: double.parse(ratingTEC.text),
-      image: image,
-      dateTime: DateTime.now()
+      image: image!,
+      dateTime: DateTime.now(),
     );
 
     await manager.saveFoodEntry(entry);

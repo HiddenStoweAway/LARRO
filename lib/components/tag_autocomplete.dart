@@ -60,11 +60,11 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Item Name: ",
+            widget.hintText != null ? "${widget.hintText}: " : "",
             style: TextStyle(
               color: colorScheme.primary,
               fontWeight: FontWeight.bold,
-              fontSize: 15,
+              fontSize: 16,
               fontStyle: FontStyle.italic,
             ),
           ),
@@ -75,7 +75,7 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
             return Chip(
               label: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.3
+                  maxWidth: MediaQuery.of(context).size.width * 0.3,
                 ),
                 child: Text(
                   tag,
@@ -110,7 +110,7 @@ class _TagAutocompleteState extends State<TagAutocomplete> {
             return Chip(
               label: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.3
+                  maxWidth: MediaQuery.of(context).size.width * 0.3,
                 ),
                 child: Text(
                   tag,

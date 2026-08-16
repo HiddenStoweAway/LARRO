@@ -21,7 +21,7 @@ class SaveManager {
     final dir = await getApplicationDocumentsDirectory();
     final box = Hive.box('foods');
 
-    await food.image?.copy('${dir.path}/${food.id}');
+    await food.image.copy('${dir.path}/${food.id}');
 
     await box.add({
       "id": food.id,
@@ -91,7 +91,7 @@ class SaveManager {
     return Hive.box("tags").values.cast<String>().toList();
   }
 
-  List<String> getItems(){
+  List<String> getItems() {
     return Hive.box('items').values.cast<String>().toList();
   }
 
@@ -103,6 +103,12 @@ class SaveManager {
     await Hive.box('foods').clear();
     await Hive.box('tags').clear();
     await Hive.box('restaurants').clear();
+    final dir = await getApplicationDocumentsDirectory();
+    if (await dir.exists()) {
+      await for (final entity in dir.list()) {
+        await entity.delete(recursive: true);
+      }
+    }
   }
 }
 
@@ -112,7 +118,7 @@ class FoodEntry {
   String itemName;
   List<String> tags;
   double rating;
-  File? image;
+  File image;
   DateTime dateTime;
 
   FoodEntry({
@@ -122,7 +128,7 @@ class FoodEntry {
     required this.rating,
     required this.tags,
     required this.dateTime,
-    this.image,
+    required this.image,
   });
 
   @override
