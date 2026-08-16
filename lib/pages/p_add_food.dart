@@ -65,6 +65,10 @@ class _AddFoodPageState extends State<AddFoodPage> {
       }
     }
 
+    if (catagoriesAddedTags.isEmpty && catagoriesTEC.text.isNotEmpty){
+      catagoriesAddedTags.add(catagoriesTEC.text);
+    }
+
     if (ratingTEC.text.isEmpty) {
       errorMessage += "\nPlease enter a rating.";
     }
@@ -94,7 +98,6 @@ class _AddFoodPageState extends State<AddFoodPage> {
       return;
     }
 
-    print(restaurantAddedTags);
     final entry = FoodEntry(
       id: foodId,
       itemName: itemAddedTags[0],

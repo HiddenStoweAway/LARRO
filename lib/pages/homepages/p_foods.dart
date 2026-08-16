@@ -37,8 +37,6 @@ class _FoodsPageState extends State<FoodsPage> {
         });
       }
 
-      print(food);
-
       foodsByTag["ALL"]!.add(food);
     }
   }
@@ -89,36 +87,30 @@ class _FoodsPageState extends State<FoodsPage> {
             ],
           ),
           body: SingleChildScrollView(
-            child: Column(
-              children: [
-                ...sortedEntries.map((value) {
-                  final sortedValues = value.value
-                    ..sort((a, b) {
-                      return -a.rating.compareTo(
-                        b.rating,
-                      ); // this is ascending, we want it descending
-                    });
+            child: Ink(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: colorScheme.primaryContainer,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Column(
+                  children: [
+                    ...sortedEntries.map((value) {
+                      final sortedValues = value.value
+                        ..sort((a, b) {
+                          return -a.rating.compareTo(
+                            b.rating,
+                          ); // this is ascending, we want it descending
+                        });
 
-                  return ExpansionTile(
-                    backgroundColor: colorScheme.primaryContainer,
-                    collapsedBackgroundColor: colorScheme.secondary,
-                    leading: sortedValues.isNotEmpty && sortedValues[0].image != null
-                                ? Image.file(sortedValues[0].image!)
-                                : Icon(Icons.question_mark),
-                    title: Text(
-                      value.key,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    children: [
-                      ...sortedValues.map((entry) {
+                      final widgetChildren = sortedValues.map((entry) {
                         return ListTile(
                           onTap: () {},
                           splashColor: colorScheme.primary,
                           leading: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 2.0),
-                            child: entry.image != null
-                                ? Image.file(entry.image!)
-                                : Icon(Icons.question_mark),
+                            child: Image.file(entry.image),
                           ),
                           title: Text(
                             entry.restaurant,
@@ -137,11 +129,27 @@ class _FoodsPageState extends State<FoodsPage> {
                             ),
                           ),
                         );
-                      }),
-                    ],
-                  );
-                }),
-              ],
+                      }).toList();
+
+                      if (value.key == "ALL") {
+                        return Column(children: widgetChildren);
+                      }
+                      return ExpansionTile(
+                        backgroundColor: colorScheme.primaryContainer,
+                        collapsedBackgroundColor: colorScheme.secondary,
+                        leading: sortedValues.isNotEmpty
+                            ? Image.file(sortedValues[0].image)
+                            : Icon(Icons.question_mark),
+                        title: Text(
+                          value.key,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        children: widgetChildren,
+                      );
+                    }),
+                  ],
+                ),
+              ),
             ),
           ),
         );
