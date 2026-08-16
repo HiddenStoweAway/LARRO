@@ -111,6 +111,27 @@ class SaveManager {
       }
     }
   }
+
+  Future<void> deleteFoodById(int id) async {
+    final box = Hive.box('foods');
+
+    // find the Hive key whose stored map has matching 'id'
+    final keyToDelete = box.keys.firstWhere(
+      (key) => box.get(key)['id'] == id,
+      orElse: () => null,
+    );
+
+    if (keyToDelete == null) return; // nothing found, nothing to delete
+
+    // also delete the associated image file
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File("${dir.path}/$id");
+    if (await file.exists()) {
+      await file.delete();
+    }
+
+    await box.delete(keyToDelete);
+  }
 }
 
 class FoodEntry {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:larro/manages/save_manager.dart';
 import 'package:larro/pages/p_add_food.dart';
+import 'package:larro/pages/p_inspect_food.dart';
 
 class FoodsPage extends StatefulWidget {
   const FoodsPage({super.key});
@@ -12,6 +13,12 @@ class FoodsPage extends StatefulWidget {
 class _FoodsPageState extends State<FoodsPage> {
   final Map<String, List<FoodEntry>> foodsByTag = {"ALL": []};
   final openedTags = [];
+
+  void openFood(FoodEntry food) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (snapshot) => InspectFoodPage(food: food)),
+    );
+  }
 
   Future<void> fillFoodsByTag() async {
     foodsByTag.clear();
@@ -106,7 +113,9 @@ class _FoodsPageState extends State<FoodsPage> {
 
                       final widgetChildren = sortedValues.map((entry) {
                         return ListTile(
-                          onTap: () {},
+                          onTap: () {
+                            openFood(entry);
+                          },
                           splashColor: colorScheme.primary,
                           leading: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 2.0),
