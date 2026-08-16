@@ -51,7 +51,7 @@ class _AddFoodPageState extends State<AddFoodPage> {
 
     if (restaurantAddedTags.isEmpty) {
       if (restaurantTEC.text.isNotEmpty) {
-        restaurantAddedTags.add(itemTEC.text);
+        restaurantAddedTags.add(restaurantTEC.text);
       } else {
         errorMessage = "Please enter a location.";
       }
@@ -94,6 +94,7 @@ class _AddFoodPageState extends State<AddFoodPage> {
       return;
     }
 
+    print(restaurantAddedTags);
     final entry = FoodEntry(
       id: foodId,
       itemName: itemAddedTags[0],

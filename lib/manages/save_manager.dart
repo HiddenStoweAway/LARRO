@@ -33,7 +33,7 @@ class SaveManager {
     });
 
     await saveRestaurant(food.restaurant);
-
+    await saveItem(food.itemName);
     await saveTags(food.tags);
   }
 
@@ -103,6 +103,7 @@ class SaveManager {
     await Hive.box('foods').clear();
     await Hive.box('tags').clear();
     await Hive.box('restaurants').clear();
+    await Hive.box('items').clear();
     final dir = await getApplicationDocumentsDirectory();
     if (await dir.exists()) {
       await for (final entity in dir.list()) {
