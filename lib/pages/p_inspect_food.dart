@@ -11,11 +11,15 @@ class InspectFoodPage extends StatefulWidget {
 }
 
 class _InspectFoodPageState extends State<InspectFoodPage> {
+  // Function to delete the current food item
   void deleteItem() async {
+    // send the delete to the savemanager
     await SaveManager.instance.deleteFoodById(widget.food.id);
 
+    // pop out of the current inspect page, because the food doesn't exist anymore
     Navigator.pop(context);
 
+    // have to reload the state on the foods homepage so it updates to get all the saved foods
     setState(() {});
   }
 
@@ -31,6 +35,7 @@ class _InspectFoodPageState extends State<InspectFoodPage> {
         backgroundColor: colorScheme.primary,
         title: Text("${widget.food.itemName}, ${widget.food.restaurant}"),
         actions: [
+          // 3 dots popup menu to edit and delete it
           PopupMenuButton(
             itemBuilder: (context) {
               return [
