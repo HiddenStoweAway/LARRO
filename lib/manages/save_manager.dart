@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -8,6 +9,19 @@ class SaveManager {
   static SaveManager instance = SaveManager();
 
   ValueListenable<Box> get listenable => Hive.box('foods').listenable();
+
+  Future<void> init() async {
+      WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+
+  // Where food data is stored
+  await Hive.openBox("foods");
+
+  // where used tags are stored
+  await Hive.openBox("tags");
+  await Hive.openBox("restaurants");
+  await Hive.openBox("items");
+  }
 
   Future<int> getNextId() async {
     final entries = await getFoodEntrys();
