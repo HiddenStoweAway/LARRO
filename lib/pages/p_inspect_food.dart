@@ -17,10 +17,7 @@ class _InspectFoodPageState extends State<InspectFoodPage> {
     await SaveManager.instance.deleteFoodById(widget.food.id);
 
     // pop out of the current inspect page, because the food doesn't exist anymore
-    Navigator.pop(context);
-
-    // have to reload the state on the foods homepage so it updates to get all the saved foods
-    setState(() {});
+    Navigator.pop(context);    
   }
 
   @override

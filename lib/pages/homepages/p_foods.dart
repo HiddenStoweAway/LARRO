@@ -16,11 +16,13 @@ class _FoodsPageState extends State<FoodsPage> {
   final openedTags = [];
 
   // When a food item is clicked on, it sends it to the inspect page of that food
-  void openFood(FoodEntry food) {
-    Navigator.of(context).push(
+  void openFood(FoodEntry food) async {
+    await Navigator.of(context).push(
       // pass the food as a argument
       MaterialPageRoute(builder: (snapshot) => InspectFoodPage(food: food)),
     );
+
+    setState(() {});
   }
 
   // On build, each tag dropdown is filled up with all the foods that share that tag
@@ -38,7 +40,10 @@ class _FoodsPageState extends State<FoodsPage> {
 
         if (foodsByTag.keys.contains(tag)) {
           // if the tag is already an index, then just add the food to the list at that index.
-          foodsByTag[tag]!.add(food);
+          if (!foodsByTag[tag]!.contains(food)){
+            foodsByTag[tag]!.add(food);
+          }
+          
         } else {
           // otherwise, then add a new index, being the tag, and add the food in it.
           foodsByTag.addAll({
@@ -49,7 +54,9 @@ class _FoodsPageState extends State<FoodsPage> {
 
       // Do the same thing as ^up there, except with the foodname parameter, but just add it into foodsByTag.
       if (foodsByTag.keys.contains(food.itemName)) {
-        foodsByTag[food.itemName]!.add(food);
+        if(!foodsByTag[food.itemName]!.contains(food)){
+          foodsByTag[food.itemName]!.add(food);
+        }
       } else {
         foodsByTag.addAll({
           food.itemName: [food],

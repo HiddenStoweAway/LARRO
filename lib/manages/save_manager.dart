@@ -11,16 +11,16 @@ class SaveManager {
   ValueListenable<Box> get listenable => Hive.box('foods').listenable();
 
   Future<void> init() async {
-      WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
+    WidgetsFlutterBinding.ensureInitialized();
+    await Hive.initFlutter();
 
-  // Where food data is stored
-  await Hive.openBox("foods");
+    // Where food data is stored
+    await Hive.openBox("foods");
 
-  // where used tags are stored
-  await Hive.openBox("tags");
-  await Hive.openBox("restaurants");
-  await Hive.openBox("items");
+    // where used tags are stored
+    await Hive.openBox("tags");
+    await Hive.openBox("restaurants");
+    await Hive.openBox("items");
   }
 
   Future<int> getNextId() async {
