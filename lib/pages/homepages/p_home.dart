@@ -4,6 +4,8 @@ import 'package:larro/managers/save_manager.dart';
 import 'package:larro/pages/homepages/p_foods.dart';
 import 'package:larro/pages/homepages/p_home_empty.dart';
 
+// This is the actual page your directed to at the start, 
+// it controls what you actually see depending on the foods you already have saved
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
