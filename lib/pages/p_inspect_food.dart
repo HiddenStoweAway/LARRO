@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:larro/manages/save_manager.dart';
+import 'package:larro/managers/save_manager.dart';
 
 class InspectFoodPage extends StatefulWidget {
   const InspectFoodPage({super.key, required this.food});

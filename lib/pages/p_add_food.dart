@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:larro/components/tag_autocomplete.dart';
-import 'package:larro/manages/save_manager.dart';
+import 'package:larro/managers/save_manager.dart';
 
 class AddFoodPage extends StatefulWidget {
   const AddFoodPage({super.key});
