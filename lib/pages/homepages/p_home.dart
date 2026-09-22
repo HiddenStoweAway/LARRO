@@ -11,9 +11,15 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /* https://api.flutter.dev/flutter/widgets/ValueListenableBuilder-class.html 
+     makes sure HomePage updates whenever whatever your listening to changes.  In this case, the valueListenable
+     is synced with something in savemanger (it will look for whenever the foods box changes.)
+    */ 
     return ValueListenableBuilder(
       valueListenable: SaveManager.instance.listenable,
       builder: (context, Box box, _) {
+        // if the box is empty, then you get sent to the page where you add your FIRST food, 
+        // otherwise if you already have foods then you get sent to the food list.
         return box.isNotEmpty ? const FoodsPage() : const EmptyHomePage();
       },
     );
