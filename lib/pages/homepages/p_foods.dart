@@ -3,6 +3,7 @@ import 'package:larro/managers/save_manager.dart';
 import 'package:larro/pages/p_add_food.dart';
 import 'package:larro/pages/p_inspect_food.dart';
 
+// THIS IS THE MAIN HOMEPAGE WHERE ALL YOUR FOODS ARE LISTED
 class FoodsPage extends StatefulWidget {
   const FoodsPage({super.key});
 
@@ -11,6 +12,7 @@ class FoodsPage extends StatefulWidget {
 }
 
 class _FoodsPageState extends State<FoodsPage> {
+  // This is a map, where the key is the tag/food item and the value is the food entry
   // "ALL" will be automatically added as a tag, and it is just every food, not just the specific ones
   final Map<String, List<FoodEntry>> foodsByTag = {"ALL": []};
   final openedTags = [];
@@ -22,6 +24,7 @@ class _FoodsPageState extends State<FoodsPage> {
       MaterialPageRoute(builder: (snapshot) => InspectFoodPage(food: food)),
     );
 
+    // in case anything was changed inside the food (like a rating change or the food being deleted) then we want to reload the page.
     setState(() {});
   }
 
@@ -40,7 +43,8 @@ class _FoodsPageState extends State<FoodsPage> {
 
         if (foodsByTag.keys.contains(tag)) {
           // if the tag is already an index, then just add the food to the list at that index.
-          if (!foodsByTag[tag]!.contains(food)){
+          
+          if (!foodsByTag[tag]!.contains(food)){ // if the tag already has this food entry for some reason don't add, there's a wierd way you can otherwise dupe foods under a tag.
             foodsByTag[tag]!.add(food);
           }
           
@@ -54,15 +58,20 @@ class _FoodsPageState extends State<FoodsPage> {
 
       // Do the same thing as ^up there, except with the foodname parameter, but just add it into foodsByTag.
       if (foodsByTag.keys.contains(food.itemName)) {
-        if(!foodsByTag[food.itemName]!.contains(food)){
+        // if the food item is already an index, then just add the food to the list at that index.
+
+        if(!foodsByTag[food.itemName]!.contains(food)){// if the foodItem already has this food entry for some reason don't add, there's a wierd way you can otherwise dupe foods under a foodItem.
           foodsByTag[food.itemName]!.add(food);
         }
       } else {
+        // otherwise, then add a new index, being the food item, and add the food in it.
         foodsByTag.addAll({
           food.itemName: [food],
         });
       }
 
+
+      // all foods will go under ALL, and will be listed at the very bottom on the page.
       foodsByTag["ALL"]!.add(food);
     }
   }
@@ -74,8 +83,9 @@ class _FoodsPageState extends State<FoodsPage> {
 
     return FutureBuilder(
       // call async function
-      future: fillFoodsByTag(),
+      future: fillFoodsByTag(), // gets all the foods which are indexed by their tag
       builder: (context, snapshot) {
+
         // order all the tags alphabetically, except "ALL" goes last.
         final sortedEntries = foodsByTag.entries.toList()
           ..sort((a, b) {
@@ -88,6 +98,8 @@ class _FoodsPageState extends State<FoodsPage> {
 
         return Scaffold(
           backgroundColor: colorScheme.surface,
+
+          // this is the big '+' button at the bottom of the page to add a new food, will redirect to the add food page
           floatingActionButton: FloatingActionButton.large(
             onPressed: () async {
               await Navigator.of(
@@ -105,8 +117,10 @@ class _FoodsPageState extends State<FoodsPage> {
             elevation: 5,
             shadowColor: colorScheme.primary,
             backgroundColor: colorScheme.primary,
-            title: Image.asset("assets/logo.png", height: 200),
+            title: Image.asset("assets/logo.png", height: 200), // LRO log
             actions: [
+              // This was a button to clear all save data
+
               // IconButton(
               //   onPressed: () async {
               //     await SaveManager.instance.deleteData();
@@ -116,7 +130,7 @@ class _FoodsPageState extends State<FoodsPage> {
             ],
           ),
           body: SingleChildScrollView(
-            child: Ink(
+            child: Ink( // I'm using Inks here because I can set the color of them and it won't overide the color of its children/inkwells
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 color: colorScheme.primaryContainer,
@@ -125,8 +139,10 @@ class _FoodsPageState extends State<FoodsPage> {
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Column(
                   children: [
+                    // a list of key value pairs, the key being the tag the food entrys(the value) are sorted under, all stored in value
                     ...sortedEntries.map((value) {
-                      // sort all the foods under a tag by rating
+
+                      // sort all the foods under each tag by rating
                       final sortedValues = value.value
                         ..sort((a, b) {
                           return -a.rating.compareTo(
@@ -143,7 +159,7 @@ class _FoodsPageState extends State<FoodsPage> {
                           splashColor: colorScheme.primary,
                           leading: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 2.0),
-                            child: Image.file(entry.image),
+                            child: Image.file(entry.image), // food image
                           ),
                           title: Text(
                             entry.restaurant,
